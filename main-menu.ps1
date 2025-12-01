@@ -1,7 +1,7 @@
 function Show-Menu {
     Clear-Host
     Write-Host "===============================" -ForegroundColor Cyan
-    Write-Host "   CyberArk PAM SaaS LAB Launcher" -ForegroundColor Cyan
+    Write-Host "CyberArk PAM SaaS LAB Launcher" -ForegroundColor Cyan
     Write-Host "===============================" -ForegroundColor Cyan
     Write-Host
     Write-Host "1. Set Mobile/Cell and email for lab users"
