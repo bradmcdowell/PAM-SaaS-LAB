@@ -2,8 +2,8 @@ do {
     Clear-Host
     Write-Host "CyberArk PAM SaaS LAB Launcher"
     Write-Host "1. Set Mobile/Cell and email for lab users"
-    Write-Host "2. Cleanup Temp"
-    Write-Host "3. Generate Report"
+    Write-Host "2. Set Region and Time Zone for all Servers"
+    Write-Host "3. Launch RSAT"
     Write-Host "4. Exit"
 
     $choice = Read-Host "Enter your choice"
