@@ -4,8 +4,8 @@ function Show-Menu {
     Write-Host "CyberArk PAM SaaS LAB Launcher" -ForegroundColor Cyan
     Write-Host "===============================" -ForegroundColor Cyan
     Write-Host
-    Write-Host "1. Set Mobile/Cell and email for lab users"
-    Write-Host "2. Set Region and Time Zone for all Servers"
+    Write-Host "1. Set Mobile/Cell and Email for ACME LAB users"
+    Write-Host "2. Set Region and Time-Zone for all Servers"
     Write-Host "3. Launch RSAT"
     Write-Host "4. Exit"
     Write-Host
