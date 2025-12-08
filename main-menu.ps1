@@ -19,7 +19,7 @@ function Run-Menu {
 
         switch ($choice) {
             "1" { & ".\Update-SMS-EMAIL\Update-SMS-Email.ps1"; Read-Host "Press Enter to continue" }
-            "2" { & "C:\Scripts\CleanupTemp.ps1"; Read-Host "Press Enter to continue" }
+            "2" { & ".\Theme\Update-TimeZone-Region.ps1"; Read-Host "Press Enter to continue" }
             "3" { & ".\Theme\Set-WindowsTheme.ps1"; Read-Host "Press Enter to continue" }
             "4" { & ".\LABs\Migration\Test-CCP.ps1"; Read-Host "Press Enter to continue" }
             "5" { Write-Host "Exiting..." -ForegroundColor Yellow; return }  # Exits the function and menu
@@ -33,8 +33,8 @@ Run-Menu
 # SIG # Begin signature block
 # MIIesgYJKoZIhvcNAQcCoIIeozCCHp8CAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCBrx0Py1WxsCY5p
-# /UyBse25jTpXF1spIdSPibRkjNLNPKCCGNIwggWNMIIEdaADAgECAhAOmxiO+dAt
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCAvx9/aWVehWV4o
+# OQ8my9jcRqNRHJAr8uLADAAN+dzKQqCCGNIwggWNMIIEdaADAgECAhAOmxiO+dAt
 # 5+/bUOIIQBhaMA0GCSqGSIb3DQEBDAUAMGUxCzAJBgNVBAYTAlVTMRUwEwYDVQQK
 # EwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAiBgNV
 # BAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBDQTAeFw0yMjA4MDEwMDAwMDBa
@@ -171,28 +171,28 @@ Run-Menu
 # GRYEYWNtZTEVMBMGA1UEAxMMYWNtZS1EQzAxLUNBAhN+AAAAXDZdcRsjYYagAAAA
 # AABcMA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
 # GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
-# AQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIHhiO1/JpwVhd4CMDqoCKbT2nd7OMQ29
-# WsxBdMP3NcwlMA0GCSqGSIb3DQEBAQUABIIBAEB7ULR6eObUt6uTp29fN91yKbus
-# CbkhW/rpo33ohYcnMaMEXxdXClXogzdN5Ayl8BKWqfoQHbZlDWnt4IlX6TAHZLdh
-# IULqp8boSTa+hesKfBaoaqcKJh1+yv25gLymCrl5csQV9xiZ5zq55PQVQIVuzQ4D
-# Su3tg5pffWh/cESDuKnJ5Gg/Ts4Unufg4b3iqTgA4EDceQep0gz3qe8KQiH6rFWR
-# Z5xd/JFi44IcagQD7/GUeDWTz3ZXql1nk4HGab51CvTXoEJM/VgCgmoC02NJBZNr
-# RbxAvTHSqvty3zhfrGa1RmHrhnJHLCdVh1ZlYpDlM0vs+xpPTtIbax7phbyhggMm
+# AQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIBvh/d5c2Nq68QSoj0Ad87TZboDVbv5D
+# j2Ef7lgDyEwJMA0GCSqGSIb3DQEBAQUABIIBAB9tsLWvXZok3d73xdm12yyx6mLj
+# 09+5VuWzkDgeTWtBfGQKIAx8isDOegI7peX5ZfrUXLwR+Mv/ilXjQRrXrRhtXUFx
+# bXfM2XhmLUmbwCjf0PSsudV1Ui5IMjqsb8dSk6nZehI/Gr14yK5yb3+phBmhhIP+
+# 9nE4ZyYWmwZ2A8/EzmczviRwoCFhiM1QZcp1g3O3XsylfGCpUiLe9CQDEeOUOrcI
+# 2jlBirRTUGj6VeRc6Bo2kQD3XZkb3FUBYMpkaNgFAyz4wtLNA4PENYIEn0YDBZ+g
+# uuJGIyoliqK0C9CbXKihfSxn33Et4DJb/qYPYQDmahj1WKHT+djRbcLcuLWhggMm
 # MIIDIgYJKoZIhvcNAQkGMYIDEzCCAw8CAQEwfTBpMQswCQYDVQQGEwJVUzEXMBUG
 # A1UEChMORGlnaUNlcnQsIEluYy4xQTA/BgNVBAMTOERpZ2lDZXJ0IFRydXN0ZWQg
 # RzQgVGltZVN0YW1waW5nIFJTQTQwOTYgU0hBMjU2IDIwMjUgQ0ExAhAKgO8YS43x
 # BYLRxHanlXRoMA0GCWCGSAFlAwQCAQUAoGkwGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-# DQEHATAcBgkqhkiG9w0BCQUxDxcNMjUxMjA4MjIwNzU0WjAvBgkqhkiG9w0BCQQx
-# IgQgqWJ6WDsfI9fPRIpgumxL3hY/ymrzHvqlUUBtho23+awwDQYJKoZIhvcNAQEB
-# BQAEggIAavv8f9swZsbZTnm+uIZdCwELjSVSaDnULrqmrdFkWJZGShMkosUYi91Z
-# LLFs+BcVBwOvly+62VZAbinOnmffEIi3F66idrRWLHKiXy7ZJnK/flzIgoISZF4X
-# 3ct4YEHioMT09KiXeemw89mjV1EdJg/cR3AwhJfTnBLl0i1yaaCpEvS4YF4cWHqQ
-# 3BC/qwFi9VgpoZQwFfPEEi1SM0IcRMl1TdI1LNMXPPlpBW+GjyROH0FfG1oQQPbz
-# s4zwevVHZ5ggDwzyaEYmRQOREwbPV9JSDnob4hKzBR7iUMX8EnPpO9EWoy95Vd5x
-# dsOHO+4izq9ug8kHVswbbYX0oxnOs9UDlcJu9haZhvBwaIG/nW2dXEYfP5WCSrF9
-# IF6UhehRM2IdD5YfuuMQQnNuvAoMp44pAOeX4RAd9RxwV91LlmuCPkZenoq/19ax
-# ckVZklYJdZ4Iry4k/KKsiCmxkEvrowgX0h4gJjsTqiluYiyke8ImwW39q7PBXujL
-# sIis4So01xOD7z36kN+/2wUAJrfmnUCnSsKelAIFRXpiSVtgxmbB4mrJ+YvBUGL9
-# nV8eJQCImovdR1benABDb72yaLKjnYVjYXxeePLhYl3HwoTtrPMkpE85ksHlkTL/
-# YrRFqdMjMgwaHmQLQuobBht6FHtBAy1UvH4LhB2ij3+fUzQ01hw=
+# DQEHATAcBgkqhkiG9w0BCQUxDxcNMjUxMjA4MjMyNTE1WjAvBgkqhkiG9w0BCQQx
+# IgQgYNS+c8p6cyDN5Gis2EL+WvvGL2YdZvkMT7Tf41YGtK0wDQYJKoZIhvcNAQEB
+# BQAEggIAa/Tb9MXrM/2yoSi1mnCnL+uyMd0lMoURRHdR+13ddFntklhNg4zM+bPN
+# KHmCoEnnW9AC7cbUKeWN2TAbhuHQNZbZdmYc3AojQn3h+E27QvEsnPdJz+4aqAtH
+# aP+VhBTmn/QPD/yw8nF3szRv0eeLN1lI0C0nqy4AXby58F+44yVMmc4cPhqrAvAD
+# 1Wj8K16OkDRRrXENQBwMePCBL2jtK4hDDS4CZSDRcQlvmsJI7xrZWidpzT/48lDH
+# xeDACUAzLwqbOItqmW2QsOwcZfHua1r+GriLNNWDUP2+NMNJMS9bZoiV+Fhyowes
+# MX5eoob7wP4ewQNfCRw998aDjIhnai6xv1mJYEYZA5+w/NPW85rJSoxnfvD2SYHf
+# R+6tuGyA35sElhgbWCFNgxs5ms2dEgCvRxJRShkWSiBXckFAXC2nnSNkY/xwKtzR
+# K4EHM66NRXg40zHk4ixeZbEv5iRksB2wepOo2qGFW+wPmdE3PIWBTDQ5dloA/c9k
+# EbYGa0avv2QWakdt7lt1RqiIcxVU+No78wO4X/X3k3t25iLntozF7JXJWBc7bAOm
+# il9pKE+iSC0TKwf1ldVGTQfuHSVuOApYwO/I/8E1IAqBbyAre3e1NiyVBGWo+EZd
+# 7jEgWyynK2LdshAME3lltcEkGD2GeEGocYv7JTlMF4x4RdSzsy0=
 # SIG # End signature block
