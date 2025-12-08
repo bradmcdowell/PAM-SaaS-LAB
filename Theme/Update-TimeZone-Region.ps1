@@ -1,7 +1,7 @@
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
-$tzRegionLogonScript = "\\dc01\Distribution\tzRegion\tz-region-logon.ps1"
+$tzRegionLogonScript = "\\dc01\Distribution\tzRegion\config.ini"
 
 # --- Region definitions ---
 $regions = @{
@@ -113,13 +113,23 @@ $applyButton.Add_Click({
             
             $ScriptRunTime = Get-Date
 $tzRegionlogonScriptContent = @"
-# This logon script was updated by the Update-TimeZone-Region script at $ScriptRunTime
-Set-WinSystemLocale -SystemLocale $($selectedRegion.SystemLocale)
-Set-WinUserLanguageList -LanguageList @('$($selectedRegion.LanguageList)') -Force
-Set-Culture -CultureInfo $($selectedRegion.Culture)
-Set-WinHomeLocation -GeoId $($selectedRegion.GeoId)
-Set-TimeZone -Id "$selectedTimezoneId"
+# This logon ini was updated by the Update-TimeZone-Region script at $ScriptRunTime
+[Settings]
+WinSystemLocale = $($selectedRegion.SystemLocale)
+WinUserLanguageList = $($selectedRegion.LanguageList)
+Culture = $($selectedRegion.Culture)
+WinHomeLocation = $($selectedRegion.Culture)
+TimeZone = $selectedTimezoneId
 "@
+
+##
+# Set-WinSystemLocale -SystemLocale $($selectedRegion.SystemLocale)
+# Set-WinUserLanguageList -LanguageList @('$($selectedRegion.LanguageList)') -Force
+# Set-Culture -CultureInfo $($selectedRegion.Culture)
+# Set-WinHomeLocation -GeoId $($selectedRegion.GeoId)
+# Set-TimeZone -Id "$selectedTimezoneId"
+##
+
 
 Set-Content -Path $tzRegionLogonScript -Value $tzRegionlogonScriptContent -Force
 
