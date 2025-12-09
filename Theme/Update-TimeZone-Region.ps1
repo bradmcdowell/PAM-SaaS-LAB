@@ -7,6 +7,27 @@ $tzRegionLogonScript = "\\dc01\Distribution\tzRegion\config.ini"
 Copy-Item .\Theme\TZRegionLogon.ps1 $tzRegionLogonScriptFolder
 # --- Region definitions ---
 $regions = @{
+    "Australia (en-AU)" = @{
+        SystemLocale = "en-AU"
+        LanguageList = "en-AU"
+        Culture = "en-AU"
+        GeoId = 12
+        TimeZone = "AUS Eastern Standard Time"
+    }
+    "United States (en-US)" = @{
+        SystemLocale = "en-US"
+        LanguageList = "en-US"
+        Culture = "en-US"
+        GeoId = 244
+        TimeZone = "Pacific Standard Time"
+    }
+    "United Kingdom (en-GB)" = @{
+        SystemLocale = "en-GB"
+        LanguageList = "en-GB"
+        Culture = "en-GB"
+        GeoId = 242
+        TimeZone = "GMT Standard Time"
+    }
     "Default UTC (en-US)" = @{
         SystemLocale = "en-US"
         LanguageList = "en-US"
@@ -14,23 +35,68 @@ $regions = @{
         GeoId = 244
         TimeZone = "UTC"
     }
-    "Australia (en-AU)" = @{
-        SystemLocale = "en-AU"
-        LanguageList = "en-AU"
-        Culture = "en-AU"
-        GeoId = 12
+    "Singapore (en-SG)" = @{
+        SystemLocale = "en-SG"
+        LanguageList = "en-SG"
+        Culture = "en-SG"
+        GeoId = 224
+        TimeZone = "Singapore Standard Time"
     }
-    "United States (en-US)" = @{
-        SystemLocale = "en-US"
-        LanguageList = "en-US"
-        Culture = "en-US"
-        GeoId = 244
+    "Canada (en-CA)" = @{
+        SystemLocale = "en-CA"
+        LanguageList = "en-CA"
+        Culture = "en-CA"
+        GeoId = 39
+        TimeZone = "Eastern Standard Time"
     }
-    "United Kingdom (en-GB)" = @{
-        SystemLocale = "en-GB"
-        LanguageList = "en-GB"
-        Culture = "en-GB"
-        GeoId = 242
+    "New Zealand (en-NZ)" = @{
+        SystemLocale = "en-NZ"
+        LanguageList = "en-NZ"
+        Culture = "en-NZ"
+        GeoId = 20
+        TimeZone = "New Zealand Standard Time"
+    }
+    "India (en-IN)" = @{
+        SystemLocale = "en-IN"
+        LanguageList = "en-IN"
+        Culture = "en-IN"
+        GeoId = 91
+        TimeZone = "India Standard Time"
+    }
+    "Ireland (en-IE)" = @{
+        SystemLocale = "en-IE"
+        LanguageList = "en-IE"
+        Culture = "en-IE"
+        GeoId = 108
+        TimeZone = "GMT Standard Time"
+    }
+    "South Africa (en-ZA)" = @{
+        SystemLocale = "en-ZA"
+        LanguageList = "en-ZA"
+        Culture = "en-ZA"
+        GeoId = 186
+        TimeZone = "South Africa Standard Time"
+    }
+    "Philippines (en-PH)" = @{
+        SystemLocale = "en-PH"
+        LanguageList = "en-PH"
+        Culture = "en-PH"
+        GeoId = 183
+        TimeZone = "Singapore Standard Time"
+    }
+    "Hong Kong (en-HK)" = @{
+        SystemLocale = "en-HK"
+        LanguageList = "en-HK"
+        Culture = "en-HK"
+        GeoId = 226
+        TimeZone = "China Standard Time"
+    }
+    "Malaysia (en-MY)" = @{
+        SystemLocale = "en-MY"
+        LanguageList = "en-MY"
+        Culture = "en-MY"
+        GeoId = 173
+        TimeZone = "Singapore Standard Time"
     }
 }
 
@@ -61,7 +127,7 @@ $regionDropdown.DropDownStyle = 'DropDownList'
 foreach ($regionName in $regions.Keys) {
     $regionDropdown.Items.Add($regionName)
 }
-$regionDropdown.SelectedItem = "Australia (en-AU)"  # Optional default
+$regionDropdown.SelectedItem = "United States (en-US)"  # Optional default
 
 # Timezone label & dropdown
 $timezoneLabel = New-Object System.Windows.Forms.Label
@@ -74,7 +140,7 @@ $timezoneDropdown.Location = New-Object System.Drawing.Point(20,115)
 $timezoneDropdown.Size = New-Object System.Drawing.Size(420,30)
 $timezoneDropdown.DropDownStyle = 'DropDownList'
 $timezoneDropdown.Items.AddRange($tzDisplayNames)
-$timezoneDropdown.SelectedItem = "(UTC+10:00) Canberra, Melbourne, Sydney"
+$timezoneDropdown.SelectedItem = "(UTC) Coordinated Universal Time"
 
 # Apply to others label & dropdown
 $remoteLabel = New-Object System.Windows.Forms.Label
