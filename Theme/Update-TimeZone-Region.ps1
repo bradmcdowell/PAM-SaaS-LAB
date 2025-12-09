@@ -7,6 +7,13 @@ $tzRegionLogonScript = "\\dc01\Distribution\tzRegion\config.ini"
 Copy-Item .\Theme\TZRegionLogon.ps1 $tzRegionLogonScriptFolder
 # --- Region definitions ---
 $regions = @{
+    "Default UTC (en-US)" = @{
+        SystemLocale = "en-US"
+        LanguageList = "en-US"
+        Culture = "en-US"
+        GeoId = 244
+        TimeZone = "UTC"
+    }
     "Australia (en-AU)" = @{
         SystemLocale = "en-AU"
         LanguageList = "en-AU"

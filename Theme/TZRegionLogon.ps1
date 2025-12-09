@@ -38,13 +38,14 @@ $Culture = $config["Settings"]["Culture"]
 $WinHomeLocation = $config["Settings"]["WinHomeLocation"]
 $TimeZone = $config["Settings"]["TimeZone"]
 
-# Example usage
+# Write setttings to terminal
 Write-Host "Setting WinSystemLocale to $WinSystemLocale"
 Write-Host "Setting WinUserLanguageList to $WinUserLanguageList"
 Write-Host "Setting Culture to $Culture"
 Write-Host "Setting WinHomeLocation to $WinHomeLocation"
 Write-Host "Setting TimeZone to $TimeZone"
 
+# Set Time Zone and Region Settings
 Set-WinSystemLocale -SystemLocale $WinSystemLocale
 Set-WinUserLanguageList -LanguageList $WinUserLanguageList -Force
 Set-Culture -CultureInfo $Culture
