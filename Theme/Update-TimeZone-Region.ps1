@@ -121,9 +121,10 @@ $tzRegionlogonScriptContent = @"
 WinSystemLocale = $($selectedRegion.SystemLocale)
 WinUserLanguageList = $($selectedRegion.LanguageList)
 Culture = $($selectedRegion.Culture)
-WinHomeLocation = $($selectedRegion.Culture)
+WinHomeLocation = $($selectedRegion.GeoId)
 TimeZone = $selectedTimezoneId
 "@
+
 
 Set-Content -Path $tzRegionLogonScript -Value $tzRegionlogonScriptContent -Force
 
