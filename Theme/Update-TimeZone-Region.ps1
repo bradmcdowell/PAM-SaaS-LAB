@@ -1,8 +1,8 @@
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
-$tzRegionLogonScriptFolder = "\\dc01\Distribution\tzRegion\"
-$tzRegionLogonScript = "\\dc01\Distribution\tzRegion\config.ini"
+$tzRegionLogonScriptFolder = "\\dc01\Distribution\TZRegion\"
+$tzRegionLogonScript = "\\dc01\Distribution\TZRegion\config.ini"
 
 Copy-Item .\Theme\TZRegionLogon.ps1 $tzRegionLogonScriptFolder
 # --- Region definitions ---

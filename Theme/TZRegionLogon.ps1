@@ -28,7 +28,7 @@ function Get-IniContent {
 }
 
 # Load the INI file
-$configFile = "\\dc01\Distribution\tzRegion\config.ini"
+$configFile = "\\dc01\Distribution\TZRegion\config.ini"
 $config = Get-IniContent -Path $configFile
 
 # Access variables
