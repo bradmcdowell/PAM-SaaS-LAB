@@ -1,7 +1,10 @@
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
+$tzRegionLogonScriptFolder = "\\dc01\Distribution\tzRegion\"
 $tzRegionLogonScript = "\\dc01\Distribution\tzRegion\config.ini"
+
+copy .\TZRegionLogon.ps1 $tzRegionLogonScriptFolder  
 
 # --- Region definitions ---
 $regions = @{
@@ -121,15 +124,6 @@ Culture = $($selectedRegion.Culture)
 WinHomeLocation = $($selectedRegion.Culture)
 TimeZone = $selectedTimezoneId
 "@
-
-##
-# Set-WinSystemLocale -SystemLocale $($selectedRegion.SystemLocale)
-# Set-WinUserLanguageList -LanguageList @('$($selectedRegion.LanguageList)') -Force
-# Set-Culture -CultureInfo $($selectedRegion.Culture)
-# Set-WinHomeLocation -GeoId $($selectedRegion.GeoId)
-# Set-TimeZone -Id "$selectedTimezoneId"
-##
-
 
 Set-Content -Path $tzRegionLogonScript -Value $tzRegionlogonScriptContent -Force
 
