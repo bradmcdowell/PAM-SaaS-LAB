@@ -4,8 +4,7 @@ Add-Type -AssemblyName System.Drawing
 $tzRegionLogonScriptFolder = "\\dc01\Distribution\tzRegion\"
 $tzRegionLogonScript = "\\dc01\Distribution\tzRegion\config.ini"
 
-copy .\TZRegionLogon.ps1 $tzRegionLogonScriptFolder  
-
+Copy-Item .\Theme\TZRegionLogon.ps1 $tzRegionLogonScriptFolder
 # --- Region definitions ---
 $regions = @{
     "Australia (en-AU)" = @{
