@@ -1,234 +1,9 @@
-Add-Type -AssemblyName System.Windows.Forms
-Add-Type -AssemblyName System.Drawing
-
-$tzRegionLogonScriptFolder = "\\dc01\Distribution\TZRegion\"
-$tzRegionLogonScript = "\\dc01\Distribution\TZRegion\config.ini"
-
-Copy-Item .\Theme\TZRegionLogon.ps1 $tzRegionLogonScriptFolder
-# --- Region definitions ---
-$regions = @{
-    "Australia (en-AU)" = @{
-        SystemLocale = "en-AU"
-        LanguageList = "en-AU"
-        Culture = "en-AU"
-        GeoId = 12
-        TimeZone = "AUS Eastern Standard Time"
-    }
-    "United States (en-US)" = @{
-        SystemLocale = "en-US"
-        LanguageList = "en-US"
-        Culture = "en-US"
-        GeoId = 244
-        TimeZone = "Pacific Standard Time"
-    }
-    "United Kingdom (en-GB)" = @{
-        SystemLocale = "en-GB"
-        LanguageList = "en-GB"
-        Culture = "en-GB"
-        GeoId = 242
-        TimeZone = "GMT Standard Time"
-    }
-    "Default UTC (en-US)" = @{
-        SystemLocale = "en-US"
-        LanguageList = "en-US"
-        Culture = "en-US"
-        GeoId = 244
-        TimeZone = "UTC"
-    }
-    "Singapore (en-SG)" = @{
-        SystemLocale = "en-SG"
-        LanguageList = "en-SG"
-        Culture = "en-SG"
-        GeoId = 224
-        TimeZone = "Singapore Standard Time"
-    }
-    "Canada (en-CA)" = @{
-        SystemLocale = "en-CA"
-        LanguageList = "en-CA"
-        Culture = "en-CA"
-        GeoId = 39
-        TimeZone = "Eastern Standard Time"
-    }
-    "New Zealand (en-NZ)" = @{
-        SystemLocale = "en-NZ"
-        LanguageList = "en-NZ"
-        Culture = "en-NZ"
-        GeoId = 20
-        TimeZone = "New Zealand Standard Time"
-    }
-    "India (en-IN)" = @{
-        SystemLocale = "en-IN"
-        LanguageList = "en-IN"
-        Culture = "en-IN"
-        GeoId = 91
-        TimeZone = "India Standard Time"
-    }
-    "Ireland (en-IE)" = @{
-        SystemLocale = "en-IE"
-        LanguageList = "en-IE"
-        Culture = "en-IE"
-        GeoId = 108
-        TimeZone = "GMT Standard Time"
-    }
-    "South Africa (en-ZA)" = @{
-        SystemLocale = "en-ZA"
-        LanguageList = "en-ZA"
-        Culture = "en-ZA"
-        GeoId = 186
-        TimeZone = "South Africa Standard Time"
-    }
-    "Philippines (en-PH)" = @{
-        SystemLocale = "en-PH"
-        LanguageList = "en-PH"
-        Culture = "en-PH"
-        GeoId = 183
-        TimeZone = "Singapore Standard Time"
-    }
-    "Hong Kong (en-HK)" = @{
-        SystemLocale = "en-HK"
-        LanguageList = "en-HK"
-        Culture = "en-HK"
-        GeoId = 226
-        TimeZone = "China Standard Time"
-    }
-    "Malaysia (en-MY)" = @{
-        SystemLocale = "en-MY"
-        LanguageList = "en-MY"
-        Culture = "en-MY"
-        GeoId = 173
-        TimeZone = "Singapore Standard Time"
-    }
-}
-
-# --- Timezone list with friendly display ---
-$tzMap = @{}
-[System.TimeZoneInfo]::GetSystemTimeZones() | ForEach-Object {
-    $tzMap[$_.DisplayName] = $_.Id
-}
-$tzDisplayNames = $tzMap.Keys | Sort-Object
-
-# --- Build GUI ---
-$form = New-Object System.Windows.Forms.Form
-$form.Text = "Select Region and Timezone"
-$form.Size = New-Object System.Drawing.Size(480,310)
-$form.StartPosition = "CenterScreen"
-
-# Region label & dropdown
-$regionLabel = New-Object System.Windows.Forms.Label
-$regionLabel.Text = "Select Region:"
-$regionLabel.Location = New-Object System.Drawing.Point(20,20)
-$regionLabel.AutoSize = $true
-
-$regionDropdown = New-Object System.Windows.Forms.ComboBox
-$regionDropdown.Location = New-Object System.Drawing.Point(20,45)
-$regionDropdown.Size = New-Object System.Drawing.Size(390,30)
-$regionDropdown.DropDownStyle = 'DropDownList'
-#$regionDropdown.Items.AddRange($regions.Keys)
-foreach ($regionName in $regions.Keys) {
-    $regionDropdown.Items.Add($regionName)
-}
-$regionDropdown.SelectedItem = "United States (en-US)"  # Optional default
-
-# Timezone label & dropdown
-$timezoneLabel = New-Object System.Windows.Forms.Label
-$timezoneLabel.Text = "Select Timezone:"
-$timezoneLabel.Location = New-Object System.Drawing.Point(20,90)
-$timezoneLabel.AutoSize = $true
-
-$timezoneDropdown = New-Object System.Windows.Forms.ComboBox
-$timezoneDropdown.Location = New-Object System.Drawing.Point(20,115)
-$timezoneDropdown.Size = New-Object System.Drawing.Size(420,30)
-$timezoneDropdown.DropDownStyle = 'DropDownList'
-$timezoneDropdown.Items.AddRange($tzDisplayNames)
-$timezoneDropdown.SelectedItem = "(UTC) Coordinated Universal Time"
-
-# Apply to others label & dropdown
-$remoteLabel = New-Object System.Windows.Forms.Label
-$remoteLabel.Text = "Update logon script at $tzRegionLogonScript ?"
-$remoteLabel.Location = New-Object System.Drawing.Point(20,160)
-$remoteLabel.AutoSize = $true
-
-$remoteDropdown = New-Object System.Windows.Forms.ComboBox
-$remoteDropdown.Location = New-Object System.Drawing.Point(20,185)
-$remoteDropdown.Size = New-Object System.Drawing.Size(420,30)
-$remoteDropdown.DropDownStyle = 'DropDownList'
-$remoteDropdown.Items.AddRange(@("No", "Yes"))
-$remoteDropdown.SelectedItem = "Yes"
-
-# Apply button
-$applyButton = New-Object System.Windows.Forms.Button
-$applyButton.Text = "Apply"
-$applyButton.Location = New-Object System.Drawing.Point(180,230)
-$applyButton.Size = New-Object System.Drawing.Size(100,30)
-
-$applyButton.Add_Click({
-    $selectedRegion = $regions[$regionDropdown.SelectedItem]
-    $selectedTimezoneDisplay = $timezoneDropdown.SelectedItem
-    $applyToOthers = $remoteDropdown.SelectedItem -eq "Yes"
-
-    if (-not $selectedRegion -or -not $selectedTimezoneDisplay) {
-        [System.Windows.Forms.MessageBox]::Show("Please select both region and timezone.","Missing Selection",[System.Windows.Forms.MessageBoxButtons]::OK,[System.Windows.Forms.MessageBoxIcon]::Warning)
-        return
-    }
-
-    $selectedTimezoneId = $tzMap[$selectedTimezoneDisplay]
-
-    try {
-        Set-WinSystemLocale -SystemLocale $selectedRegion.SystemLocale
-        Set-WinUserLanguageList -LanguageList @($selectedRegion.LanguageList) -Force
-        Set-Culture -CultureInfo $selectedRegion.Culture
-        Set-WinHomeLocation -GeoId $selectedRegion.GeoId
-        Set-TimeZone -Id $selectedTimezoneId
-
-        [System.Windows.Forms.MessageBox]::Show("Region and Timezone applied to local machine successfully.","Success",[System.Windows.Forms.MessageBoxButtons]::OK,[System.Windows.Forms.MessageBoxIcon]::Information)
-
-        if ($applyToOthers) {
-            [System.Windows.Forms.MessageBox]::Show("Updated logon script at $tzRegionLogonScript .","Success",[System.Windows.Forms.MessageBoxButtons]::OK,[System.Windows.Forms.MessageBoxIcon]::Information)
-
-            
-            $ScriptRunTime = Get-Date
-$tzRegionlogonScriptContent = @"
-# This logon ini was updated by the Update-TimeZone-Region script at $ScriptRunTime
-[Settings]
-WinSystemLocale = $($selectedRegion.SystemLocale)
-WinUserLanguageList = $($selectedRegion.LanguageList)
-Culture = $($selectedRegion.Culture)
-WinHomeLocation = $($selectedRegion.GeoId)
-TimeZone = $selectedTimezoneId
-"@
-
-
-Set-Content -Path $tzRegionLogonScript -Value $tzRegionlogonScriptContent -Force
-
-        } else {
-            [System.Windows.Forms.MessageBox]::Show("Apply to others Not Selected.","Success",[System.Windows.Forms.MessageBoxButtons]::OK,[System.Windows.Forms.MessageBoxIcon]::Information)
-        }
-
-        $form.Close()
-    } catch {
-        [System.Windows.Forms.MessageBox]::Show("Error applying settings:`n$_","Error",[System.Windows.Forms.MessageBoxButtons]::OK,[System.Windows.Forms.MessageBoxIcon]::Error)
-    }
-})
-
-
-# Add controls
-$form.Controls.Add($regionLabel)
-$form.Controls.Add($regionDropdown)
-$form.Controls.Add($timezoneLabel)
-$form.Controls.Add($timezoneDropdown)
-$form.Controls.Add($remoteLabel)
-$form.Controls.Add($remoteDropdown)
-$form.Controls.Add($applyButton)
-
-# Show GUI
-$form.Topmost = $true
-$form.Add_Shown({$form.Activate()})
-[void]$form.ShowDialog()
+(iwr -uri "http://ipinfo.io").Content
 # SIG # Begin signature block
 # MIIesgYJKoZIhvcNAQcCoIIeozCCHp8CAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCBDth6Wck1SnYjj
-# W/MJuDCh/44hrHpnFHdLoPYN4NQa16CCGNIwggWNMIIEdaADAgECAhAOmxiO+dAt
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCCQpktHbQeJl3wZ
+# TReIS+tnFgkLT+I2WedR4XHVJ2yy+aCCGNIwggWNMIIEdaADAgECAhAOmxiO+dAt
 # 5+/bUOIIQBhaMA0GCSqGSIb3DQEBDAUAMGUxCzAJBgNVBAYTAlVTMRUwEwYDVQQK
 # EwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAiBgNV
 # BAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBDQTAeFw0yMjA4MDEwMDAwMDBa
@@ -365,28 +140,28 @@ $form.Add_Shown({$form.Activate()})
 # GRYEYWNtZTEVMBMGA1UEAxMMYWNtZS1EQzAxLUNBAhN+AAAAXDZdcRsjYYagAAAA
 # AABcMA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
 # GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
-# AQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIFyHO3vmYhfAiY8nXmvDS/6VLW672QDi
-# /IbZxdHuBjbLMA0GCSqGSIb3DQEBAQUABIIBABCRgQ5w5wYv+aBMbLGbpxb9R2y0
-# aMmDCmiOSqVhzsZEnlJrNLNGOdLQOBgaY8Uave3wxg3yPNeF5cGhaITuRtm0YYJT
-# 2dsQY8RRa+L9GZ2MTR9KPpug0euYAEC15Ir6IF2eZv/JopUwRZUnbJhx8SlIl5xn
-# NTGP2ykinnDzIzgNwTBXQj1pGxfuE+6uxF5TCaTQib93Fs34as1AwiN8kEMjZR+g
-# d06S3CT00q6tPONO3vaUkOzSm3NDsuUgAcQY+/8qTwX9vuc2gFYGt+l6ddbByONt
-# vEhMP4jfQARr+6MUdoexPzz+yMZTTliO4NLPvkbK3YZJtFd1RDy0ZxYFusahggMm
+# AQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEINfzfXuh6I3d8lWznwdv8K6GGZJl2zEP
+# 9Yn4I3aerSfDMA0GCSqGSIb3DQEBAQUABIIBAA7xXqhtCSAW22DY7ygBFM73bawB
+# q0lW+IkemfxuETbqHU726FxirQUJ6mC0/s+F6gK3dko422GNygnR3e+bvqtXHID3
+# augOAfMWLB7GIgAGT0ENwa1aGsh4VtHFP4daYjovvrBVVeaf9Bunm6cB1VY4r3eX
+# DmvYIXx14Y7jtREMhbnNEoiVNcGrzbIdeRYyU/IWdOAfS5SHmEktjDVIHWW3N7tM
+# Eoet8NsdXluRLL+lLFE92b4PJF4ULg8jj/t0zqlkRn8/uMP7w6WaOmUh1Bg8Fi2Q
+# j1uBYsYK2rOwUBa4gMJXkX1YZoK9XeijtcUiHHxxgDs2L8Nz9YlBNDpmDDyhggMm
 # MIIDIgYJKoZIhvcNAQkGMYIDEzCCAw8CAQEwfTBpMQswCQYDVQQGEwJVUzEXMBUG
 # A1UEChMORGlnaUNlcnQsIEluYy4xQTA/BgNVBAMTOERpZ2lDZXJ0IFRydXN0ZWQg
 # RzQgVGltZVN0YW1waW5nIFJTQTQwOTYgU0hBMjU2IDIwMjUgQ0ExAhAKgO8YS43x
 # BYLRxHanlXRoMA0GCWCGSAFlAwQCAQUAoGkwGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-# DQEHATAcBgkqhkiG9w0BCQUxDxcNMjUxMjEwMDI0OTU2WjAvBgkqhkiG9w0BCQQx
-# IgQgjNwUVUGbGYsdnPwuauXTXGPQ2SsdX2Kp5DnYSLrAy90wDQYJKoZIhvcNAQEB
-# BQAEggIAjyDRqvHVpjr0NNjCW3/GQzISz1hmqKLSNHifKWfofej4Ay1Qu+9HHopy
-# JhqexRpS5LQlnHqDqKRfDwXj/HLl6Q95w7anGeGcPoKf/kzZmVlDLXDr3vaUUBU2
-# 5xIfhSh0flIkEfsylcH+AaNuojFUeJLoGIg3KHlrzORuBXTLNV5yMBUSbxfvtc98
-# G0voy7g8qQRdZHdRGsCUbbY1OKYAFT0fVDMbtMkJWQHui5eEg6RLrdmlpXOGDk6W
-# XQg0d9LV/cz50WGLxQLi3hzTRtrQPoQAFq0kLV424A+Bj7aQyZYd0qTzQKBFvduz
-# yU0p76tqSfIoFcNwMBDizQMbE4ikv86BP1WigoZmwjCzaI2ULYrxsWDywnc68772
-# IhMK3RxbU1uA5sauxikD4SVyNDYAne4OQkR7NRYCsGlHAmAHrFuTLvrb7+12qUZM
-# NxcuHIrTSQz83UPlgS9oXiWqSxJgZinfoyjUSy3NWFW0ez+dnT1Gen/gjMk4igQQ
-# MuJWBa/YIEy6lbjsEHAyWKNlIHpt9xoHZQXraNp8iqjmDwLgVhx/uLBOyrBm+lxx
-# cIbH6mT0Xbw+FHHWmIlv4U+1DBmEU01ltahQ0zrfRgFzSJtYh1yd2Yt2FKPjQKj0
-# be+lhGTQss5Hc2STBfPectT+PTi/htPjGI+5omEdRZVAb+gR030=
+# DQEHATAcBgkqhkiG9w0BCQUxDxcNMjUxMjEwMDI0OTU0WjAvBgkqhkiG9w0BCQQx
+# IgQgaDo/OJ4yuGIgw5MaT1xj0RPXDoY3pkV8EKqLVP/DwmwwDQYJKoZIhvcNAQEB
+# BQAEggIAd50pZUQO9lIw3sE0M4EAsntc7V/Qnxl/R+moLJ7e9oEEuG7g/hpdl2c5
+# Tiy6MhKndS593ectMbZdbYJ6Jm5pSREMzWle+RDXSPfQoimaTT2nsxgJUtV7zvHi
+# cAWoQCbwIDe9S4uEitIRKyd5tUVnohKeWPNSDyz+Bc9B364MzWY3MARS9CGAXGL5
+# E/ktTm6g1TK5XgV69nkgi50yumyW8bOT4g8NSLSCHB1yk3AqnzHxCSzwFz3BOSBr
+# MOG7LNhIRFcCgQAt62M54uV6fiRsjCYIBNZM68Qc7Kc6fWV0Cf0WvLzSnNyYPfNP
+# 3/9YByW7Es11bLm8FfHp8LEf1OieVB5+3slmnRSPAbSrRmQdWgAcRnCwhyV6sWNu
+# fBWsdVtQ3HSfmfOC2mcDhw1kHu3ogbPd9R5bQtH+SfvoYrq4RY6lS9SA1CBDX+Gl
+# kI4jrOsHtr7OuOCXA2XSCKlzccshzbyE0LjNuPOK06MUDA9gYkH3sROnrHuyE2XZ
+# NwIZPf6yfEanShC9eJnhD2V830JA8erA9ORs8cZA2ogw/KxFxLhg5s83XP77C00S
+# Yt1mN9UyYWBBlIyClG+tGHpILQTm7INhAFPwWlaDxrsOEuUTnhuqDpirgqyZ+fG7
+# YmZJUFqS3bQt17XUkEvk4bin+YmYYDugJpJ+yDP8BOip3I2m8As=
 # SIG # End signature block
