@@ -1,9 +1,129 @@
-(iwr -uri "http://ipinfo.io").Content
+# 1) SkyTap IP ranges (as provided)
+$SkyTapRanges = @(
+    @{ Region = 'APAC-2';            CIDR = '45.120.106.48/29' }
+    @{ Region = 'AU-Sydney-M-1';     CIDR = '20.53.232.34/31' }
+    @{ Region = 'AU-Sydney-M-2';     CIDR = '13.70.104.148/31' }
+    @{ Region = 'CAN-Toronto';       CIDR = '184.170.236.48/29' }
+    @{ Region = 'CN-HongKong-M-1';   CIDR = '168.63.206.24/31' }
+    @{ Region = 'EMEA';              CIDR = '185.64.245.48/29' }
+    @{ Region = 'IE-Dublin-M-1';     CIDR = '13.69.157.38/31' }
+    @{ Region = 'IN-Pune-M-1';       CIDR = '104.211.92.36/31' }
+    @{ Region = 'JP-Tokyo-M-1';      CIDR = '13.78.15.0/31' }
+    @{ Region = 'NL-Amsterdam-M-1';  CIDR = '20.54.198.188/31' }
+    @{ Region = 'SG-Singapore-M-1';  CIDR = '20.197.80.234/31' }
+    @{ Region = 'UK-London-M-1';     CIDR = '51.132.32.200/31' }
+    @{ Region = 'UK-London-M-2';     CIDR = '20.108.161.156/31' }
+    @{ Region = 'US-Central';        CIDR = '184.170.232.48/29' }
+    @{ Region = 'US-East-2';         CIDR = '206.198.150.48/29' }
+    @{ Region = 'US-Texas-M-1';      CIDR = '20.189.26.100/31' }
+    @{ Region = 'US-Virginia-M-1';   CIDR = '206.198.148.48/29' }
+    @{ Region = 'US-Virginia-M-2';   CIDR = '104.211.56.166/31' }
+    @{ Region = 'US-West';           CIDR = '199.204.216.104/29' }
+)
+
+# 2) IPv4 -> UInt32
+function Convert-IPv4ToUInt32 {
+    param([Parameter(Mandatory)][string]$IPv4)
+    try {
+        $bytes = [System.Net.IPAddress]::Parse($IPv4).GetAddressBytes()
+    } catch {
+        throw "Invalid IPv4 address: $IPv4"
+    }
+    if ($bytes.Length -ne 4) { throw "Invalid IPv4 address: $IPv4" }
+    return ([uint32]$bytes[0] -shl 24) -bor
+           ([uint32]$bytes[1] -shl 16) -bor
+           ([uint32]$bytes[2] -shl 8)  -bor
+           ([uint32]$bytes[3])
+}
+
+# 3) Compute network start/end using block size and modulo
+function Get-CIDRRange {
+    param([Parameter(Mandatory)][string]$CIDR)
+    $parts = $CIDR.Split('/')
+    if ($parts.Count -ne 2) { throw "Invalid CIDR: $CIDR" }
+
+    $baseIP  = $parts[0]
+    $prefix  = [int]$parts[1]
+    if ($prefix -lt 0 -or $prefix -gt 32) { throw "Invalid prefix in CIDR: $CIDR" }
+
+    $baseUInt  = Convert-IPv4ToUInt32 $baseIP
+    $hostBits  = 32 - $prefix
+    # Block size (# of addresses in the CIDR)
+    $blockSize = [uint64](1) -shl $hostBits  # works well for /29 and /31
+
+    # Use UInt64 math to avoid signed issues, then cast back
+    $base64       = [uint64]$baseUInt
+    $networkBase  = [uint32]($base64 - ($base64 % $blockSize))
+    $broadcast    = [uint32]([uint64]$networkBase + ($blockSize - 1))
+
+    [pscustomobject]@{
+        CIDR              = $CIDR
+        BaseIP            = $baseIP
+        Prefix            = $prefix
+        NetworkAddressUInt = $networkBase
+        BroadcastAddressUInt = $broadcast
+    }
+}
+
+# 4) Membership test
+function Test-IPv4InCIDR {
+    param(
+        [Parameter(Mandatory)][string]$IPv4,
+        [Parameter(Mandatory)][string]$CIDR
+    )
+    $ipUInt   = Convert-IPv4ToUInt32 $IPv4
+    $range    = Get-CIDRRange $CIDR
+    return ($ipUInt -ge $range.NetworkAddressUInt -and $ipUInt -le $range.BroadcastAddressUInt)
+}
+
+# 5) Discover public IP with multiple fallbacks
+function Get-PublicIPv4 {
+    $endpoints = @(
+        'https://api.ipify.org',
+        'https://ifconfig.me/ip',
+        'https://ipinfo.io/ip'
+    )
+    foreach ($url in $endpoints) {
+        try {
+            $ip = (Invoke-RestMethod -Uri $url -Method GET -TimeoutSec 10).Trim()
+            if ($ip -match '^\d{1,3}(\.\d{1,3}){3}$') { return $ip }
+        } catch { continue }
+    }
+    throw "Unable to determine public IPv4 address. Check internet connectivity or proxy settings."
+}
+
+# 6) Main
+try {
+    $publicIP = Get-PublicIPv4
+    Write-Host "Detected public IPv4: $publicIP" -ForegroundColor Cyan
+
+    $matches = foreach ($r in $SkyTapRanges) {
+        if (Test-IPv4InCIDR -IPv4 $publicIP -CIDR $r.CIDR) {
+            [pscustomobject]@{ Region = $r.Region; CIDR = $r.CIDR }
+        }
+    }
+
+    if ($matches) {
+        Write-Host "`nAdd the following IP range(s) in your PAM SaaS IP allow list :" -ForegroundColor Green
+        $matches | Format-Table -AutoSize
+    } else {
+        Write-Warning "`nNo direct match found in the provided SkyTap ranges."
+        Write-Host "Reference ranges:" -ForegroundColor Yellow
+        $SkyTapRanges | Format-Table Region, CIDR -AutoSize
+    }
+}
+catch {
+    Write-Error $_.Exception.Message
+    Write-Host "`nTroubleshooting tips:" -ForegroundColor Yellow
+    Write-Host " - Ensure outbound internet access is available from this VM."
+    Write-Host " - If behind a proxy, configure PowerShell to use it (e.g., `$env:HTTPS_PROXY`)."
+    Write-Host " - Try again, or manually compare your IP with the ranges."
+}
 # SIG # Begin signature block
 # MIIesgYJKoZIhvcNAQcCoIIeozCCHp8CAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCCQpktHbQeJl3wZ
-# TReIS+tnFgkLT+I2WedR4XHVJ2yy+aCCGNIwggWNMIIEdaADAgECAhAOmxiO+dAt
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCDIids44ysSN9ZI
+# JXoO6LArT5IJPCdVKcgpfpnE+Vq+AqCCGNIwggWNMIIEdaADAgECAhAOmxiO+dAt
 # 5+/bUOIIQBhaMA0GCSqGSIb3DQEBDAUAMGUxCzAJBgNVBAYTAlVTMRUwEwYDVQQK
 # EwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAiBgNV
 # BAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBDQTAeFw0yMjA4MDEwMDAwMDBa
@@ -140,28 +260,28 @@
 # GRYEYWNtZTEVMBMGA1UEAxMMYWNtZS1EQzAxLUNBAhN+AAAAXDZdcRsjYYagAAAA
 # AABcMA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
 # GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
-# AQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEINfzfXuh6I3d8lWznwdv8K6GGZJl2zEP
-# 9Yn4I3aerSfDMA0GCSqGSIb3DQEBAQUABIIBAA7xXqhtCSAW22DY7ygBFM73bawB
-# q0lW+IkemfxuETbqHU726FxirQUJ6mC0/s+F6gK3dko422GNygnR3e+bvqtXHID3
-# augOAfMWLB7GIgAGT0ENwa1aGsh4VtHFP4daYjovvrBVVeaf9Bunm6cB1VY4r3eX
-# DmvYIXx14Y7jtREMhbnNEoiVNcGrzbIdeRYyU/IWdOAfS5SHmEktjDVIHWW3N7tM
-# Eoet8NsdXluRLL+lLFE92b4PJF4ULg8jj/t0zqlkRn8/uMP7w6WaOmUh1Bg8Fi2Q
-# j1uBYsYK2rOwUBa4gMJXkX1YZoK9XeijtcUiHHxxgDs2L8Nz9YlBNDpmDDyhggMm
+# AQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIEJkchx97m9O9pAb8prP2LrS7ecfOIIB
+# lCtDNgnG5VhbMA0GCSqGSIb3DQEBAQUABIIBAFy7ISOf90EetB/Nbkkq1U137sfA
+# OKUr6SbGLglKVf6zhPSahsNF6kA+DxBgR3qsLCokW8PYvE4GaASyorJmJTTD5nEV
+# Lu1pBkCqTTmsPqc3Ire9RN7cMdXDyZVuSQ4PDjji4JiO77aId5QeZtVuvjJCbuk5
+# T3GFY7G9AL19mJ6L6pATX+gdfy+EZSWagOTadGtoNDQ60ItZ+sIDzERrJ1AL06jk
+# IkKkBTK8UdLprV1qONfUouRqFEh7ZorC9wVvbaifAjTpuACmfmgJPQuU7KOOcM8W
+# HrfZwWVcXJqO4/qfhbhMF+nLtGtydgWd4b4breIAIWqh3I6LYLhMUUeA0lahggMm
 # MIIDIgYJKoZIhvcNAQkGMYIDEzCCAw8CAQEwfTBpMQswCQYDVQQGEwJVUzEXMBUG
 # A1UEChMORGlnaUNlcnQsIEluYy4xQTA/BgNVBAMTOERpZ2lDZXJ0IFRydXN0ZWQg
 # RzQgVGltZVN0YW1waW5nIFJTQTQwOTYgU0hBMjU2IDIwMjUgQ0ExAhAKgO8YS43x
 # BYLRxHanlXRoMA0GCWCGSAFlAwQCAQUAoGkwGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-# DQEHATAcBgkqhkiG9w0BCQUxDxcNMjUxMjEwMDI0OTU0WjAvBgkqhkiG9w0BCQQx
-# IgQgaDo/OJ4yuGIgw5MaT1xj0RPXDoY3pkV8EKqLVP/DwmwwDQYJKoZIhvcNAQEB
-# BQAEggIAd50pZUQO9lIw3sE0M4EAsntc7V/Qnxl/R+moLJ7e9oEEuG7g/hpdl2c5
-# Tiy6MhKndS593ectMbZdbYJ6Jm5pSREMzWle+RDXSPfQoimaTT2nsxgJUtV7zvHi
-# cAWoQCbwIDe9S4uEitIRKyd5tUVnohKeWPNSDyz+Bc9B364MzWY3MARS9CGAXGL5
-# E/ktTm6g1TK5XgV69nkgi50yumyW8bOT4g8NSLSCHB1yk3AqnzHxCSzwFz3BOSBr
-# MOG7LNhIRFcCgQAt62M54uV6fiRsjCYIBNZM68Qc7Kc6fWV0Cf0WvLzSnNyYPfNP
-# 3/9YByW7Es11bLm8FfHp8LEf1OieVB5+3slmnRSPAbSrRmQdWgAcRnCwhyV6sWNu
-# fBWsdVtQ3HSfmfOC2mcDhw1kHu3ogbPd9R5bQtH+SfvoYrq4RY6lS9SA1CBDX+Gl
-# kI4jrOsHtr7OuOCXA2XSCKlzccshzbyE0LjNuPOK06MUDA9gYkH3sROnrHuyE2XZ
-# NwIZPf6yfEanShC9eJnhD2V830JA8erA9ORs8cZA2ogw/KxFxLhg5s83XP77C00S
-# Yt1mN9UyYWBBlIyClG+tGHpILQTm7INhAFPwWlaDxrsOEuUTnhuqDpirgqyZ+fG7
-# YmZJUFqS3bQt17XUkEvk4bin+YmYYDugJpJ+yDP8BOip3I2m8As=
+# DQEHATAcBgkqhkiG9w0BCQUxDxcNMjYwMTA5MDEwMjQxWjAvBgkqhkiG9w0BCQQx
+# IgQgj/96HFz0KVGIOJplrXvVmwY2xcmBlj9rGug0DVXPABgwDQYJKoZIhvcNAQEB
+# BQAEggIADYizcx2yNK/3ioPFmmnpVrJbeYAaFyCPtb6ayQudHISeKHRSB3+BG75M
+# 1ZIpL5TJhsE5G+sSUx2N0PW6mEtUqXvfx45v6WzeBvY5fUNglsb5/Bny5AoZnroV
+# aTVV4tqmRflMW4+bLrWG82Ip3ByWMGp2X63YN1zUk2SKKhipknH6r4YTeOnMicHf
+# CYHYug34dKg4R6ATMnTKiuz1DJd+EC4vXGCR16WzhEpfAwz2OijUaS39f/UOdVfL
+# nml78IEGv+odJ20hS6Tekbj4LYB/tT3athQi03qJqIV65v15vsST4FrLLAx894x5
+# bDZkdof5lmO9/5gMW9wARST/oU0SWoLySmNRDgkJYFC+/t3uX/92Jnz2yw6qYgxQ
+# 1oZER2o9ZSfsYiUNICokBrHWowv6U8/urlpyVFTFnEA+4Wgu7ePgDEJUnWzm7LJH
+# y8I9bD3aEDfRQfnGUvAUw95DeDlnOucGZkhcpaf7PVW6m+m4atiUop7Z332lpDwy
+# nb8ehZScdfYWqTiIC01CWYi6zptwPmkw/6S4glDcVQZGp/J94+AzBfS7zTKYTaHN
+# +5p2asplcmt5LkD+HVqzTbBqonchhYAkPRvVOAuxAf/46+S5kSQR7rQyb5t343Zm
+# 3XjAclgnSP9DBUpT66qaj/rEHs0fu/8fcJoHlbSnThL1RQbE5vs=
 # SIG # End signature block
