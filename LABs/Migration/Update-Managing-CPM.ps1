@@ -1,5 +1,7 @@
-﻿$PVWAURL = "https://acme-h2p-au.privilegecloud.cyberark.cloud/PasswordVault/"
-$IdentityTenantURL = "ace4339.id.cyberark.cloud"
+﻿$subdomain = Read-Host "Enter your tenant subdomain eg acme-lab-xxxx"
+$PVWAURL = "https://$subdomain.privilegecloud.cyberark.cloud/PasswordVault/"
+$IdentityTenantID = Read-Host "Enter your Identity tenant ID eg abc1234"
+$IdentityTenantURL = "$IdentityTenantID.id.cyberark.cloud"
 
 # Prompt for the username
 $IdentityUser = Read-Host "Enter your CyberArk Identity username (e.g., mike@acme.corp)"
@@ -74,8 +76,8 @@ Write-Host "`nUpdate completed successfully." -ForegroundColor Green
 # SIG # Begin signature block
 # MIIesgYJKoZIhvcNAQcCoIIeozCCHp8CAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCAOYSwHeiy4ZBbk
-# qaDdqimT6N1cxT0ocT5SfP41mWJIbaCCGNIwggWNMIIEdaADAgECAhAOmxiO+dAt
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCBtbxCS/nJ6FjXp
+# 7Jyp6i8wjFe82kXpWeOEQJLW9EYhJaCCGNIwggWNMIIEdaADAgECAhAOmxiO+dAt
 # 5+/bUOIIQBhaMA0GCSqGSIb3DQEBDAUAMGUxCzAJBgNVBAYTAlVTMRUwEwYDVQQK
 # EwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAiBgNV
 # BAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBDQTAeFw0yMjA4MDEwMDAwMDBa
@@ -212,28 +214,28 @@ Write-Host "`nUpdate completed successfully." -ForegroundColor Green
 # GRYEYWNtZTEVMBMGA1UEAxMMYWNtZS1EQzAxLUNBAhN+AAAAXDZdcRsjYYagAAAA
 # AABcMA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
 # GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
-# AQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIAJHsVVYpoo4rtypwmCe+UkaaWnyk6v1
-# R/YkzzEwP2g0MA0GCSqGSIb3DQEBAQUABIIBAJUi23TlKRsRZVbK5mcWxuq4wTzt
-# 7NMqyMbRN4ul2TJ1QAT67ng2bNG4g9IULX79z5isxpb42C7nUyG+Wl9IMUWipA2Q
-# vVnx3MFKA1lywZOkjbtgtA94bAswPZoGR3StESg4LkykpGZwtX0eMKMuUXz/+Clu
-# 0h7s0WkhYTZEp9Y8wiR6XmfedH0OjXjTgQqa6T+gC9Pk94Am4EY/vx1YwR0GlTXO
-# xcMD+PB6qLPXBZZ+osEuIz1NcrU3BVX1XcUhrhupBnyZTyqXuDXho5ux2DA0pniL
-# O2vad795elFc15b8pT6oI2NKVnSHgfbCJ+k6+7fKOBYKBkA8fAIfYDGENB2hggMm
+# AQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEILImBQEeIBNfJHZm66GgHgbd/goDRnfD
+# lFpVwA/35ScbMA0GCSqGSIb3DQEBAQUABIIBAF9qtNkRyInh4WxBsVp6ar3T+dbH
+# nrLm/ASytnOQEMsJpZczfUmHtCVJyVSBUwT+LRqhOGfiLruscg1Ly2bSe5LLizv3
+# nh1zRSpshSS+/DawRVZOMv1gV5fJnLFmTlIfRyGFwvv/7nVrQ8JBg2dHan1DQIRz
+# DkBwHL5LUsk58kU+gP6AyAjfPzq5wWWpMxhsRTCEDSs0zkN05G3aVCR7E3exrS4n
+# E5v6e6LWGD+FH1W57IHvmhPRqsi9hcrwklS6y1B2M1JETrsdrvrw/ZvpJNj7ix0G
+# Od7m/3JzIHhGuewCsoIVtd/+oybCjp6xh3nAfcyKxr/hxy/gz5xWP5SMjjOhggMm
 # MIIDIgYJKoZIhvcNAQkGMYIDEzCCAw8CAQEwfTBpMQswCQYDVQQGEwJVUzEXMBUG
 # A1UEChMORGlnaUNlcnQsIEluYy4xQTA/BgNVBAMTOERpZ2lDZXJ0IFRydXN0ZWQg
 # RzQgVGltZVN0YW1waW5nIFJTQTQwOTYgU0hBMjU2IDIwMjUgQ0ExAhAKgO8YS43x
 # BYLRxHanlXRoMA0GCWCGSAFlAwQCAQUAoGkwGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-# DQEHATAcBgkqhkiG9w0BCQUxDxcNMjYwMTE1MDA0ODUxWjAvBgkqhkiG9w0BCQQx
-# IgQgSq9Qi/Uq+TQ7HczYkN+pend4A2f83oWW7T+FeEah5QUwDQYJKoZIhvcNAQEB
-# BQAEggIAKlEygFyft9NoeNbJu/BCuiwKdIyrPoBU8A2CI32LacAtQt+pw8gN0jlL
-# +He+BPDDX+8bEPKwmiKRSUmn92wXpMR7QCz79Cmz1Fef1d2TFKlwn77tnNlN/AmC
-# yq7jiHV11MlWYyZrGWQ+5dwuUYpY+w5cgbQ/yvjVxGxEEPOEyw8SbqiBHa39f7vl
-# 65tLWQuEoyZOnIs1m8GZL9rQff6AzwIurbv32cahXjQI7MWFk1uwZOg9Z3C1j2R+
-# pbs1IfU7Tuit3f+EjNrZWHgljJ4BT06ViEyYzQI6UgYglkaEqJfEwrLvD+lEOrNM
-# zZZlaYUXhjfAm8YWeauoskbXxzD5p8fqM/OoMpbRrQUKaDXLwDuUSGavxX/6RpZ7
-# UlH8zxSLIK+GZ/gUttSOQrroor8MAtezmDba1pgnxuqcBpWKZaMrza1DlffKdVbg
-# EvBHG/SOxWeje5JLL8pe2CuSeP+NSjhSd0dxTN+e/go9MwRWkEMGhMl0IP60+X0B
-# cFsOsqMNKbMQGFZgkOZVIjDwAad9v/U5ecXgON70SA/JMGrthjohZKC8f5epTxsJ
-# lWs+EPkBRDJYKxBAuRs7qU1SyCdQIgnaYbq2rPdjJjb4MCqvxeFFyQPWF95pSd4n
-# 2EEteWWEbLlw/6xkwa0OeoHnXpKrnstE9Sl9Ds6p8TXnKFtVuj4=
+# DQEHATAcBgkqhkiG9w0BCQUxDxcNMjYwMTE1MDQ0NjE1WjAvBgkqhkiG9w0BCQQx
+# IgQgRriah/7EIwuk8eNabemHU5urmi9fJO8hl41jN81CFFgwDQYJKoZIhvcNAQEB
+# BQAEggIAd3eLjNRHC9Rt9UkKsumpGpGGWcEZS3wSyKv2QhFn0Sx45edkLyOh2UBo
+# Py4+VzKwZLzAfLhxCRdAuv/Fgg8tU1+3+y4TiRXLsUh6dxf6AtQJnQYpCb+JwHY2
+# JZJKopW8rPFpzUhYa555czUnIwmiJDI0O0vmveUfXkwtVpr65w8DQZ3B7UI3yYpH
+# hKMoeMlkW2t9r2sD7qSO4pgI1OoqogDdQwXhWSQ7/3KeJPnLvg+rqrYST7m2mtQn
+# BmTVOHEI1K+AaRUXwceJC0UgsEKlCfysdJPn/izTcgabl4O194rfHqnRCyX589eq
+# U/cmMvz9cn4WagUs/HXci51nKvDyG8oZu9tIMNuovPyY/PtSlwwlEzQ2rY63qQNI
+# ph9dP7XR1uKbs3burD9HpxZIPyvRz6HwNw63/OHXwex75eHm03vFarhGZpT1Cwl9
+# qAWEXTCMTj65WJ2Up7qmizm+tw69e4PUjgjm8gYQjoFlMz56FkWVD5w5aiuCzE/8
+# 3Dv6CBVxOhhjXr3fGb0uwXcUGbG7L1+B6+tb6O1FJEW9k9PrmJeuPAOcQWjdtVhL
+# b3Grb/UtP3Mb8aXLROpsCnJC/s+xpMW/Oiokco2/t7jOaoJHN2q1sqVHrubEpXaH
+# MK3jw4oZ5xrZhw6u8+lMN8aHCBM9By/CPrzFC3Djtu77iPCpcq8=
 # SIG # End signature block
