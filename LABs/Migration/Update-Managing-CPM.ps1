@@ -1,7 +1,62 @@
-﻿$subdomain = Read-Host "Enter your tenant subdomain eg acme-lab-xxxx"
+﻿# Intro / description
+Write-Host "`nCyberArk Bulk Update Managing CPM" -ForegroundColor Cyan
+Write-Host "=================================`n" -ForegroundColor Cyan
+
+Write-Host "This script performs bulk account actions." -ForegroundColor Yellow
+Write-Host "You can set accounts in safes to reconcile, change, or verify." -ForegroundColor Yellow
+
+$subdomain = Read-Host "Enter your PAM SaaS tenant subdomain eg acme-lab-xxxx"
+$PcloudURL = "https://$subdomain.cyberark.cloud"
 $PVWAURL = "https://$subdomain.privilegecloud.cyberark.cloud/PasswordVault/"
-$IdentityTenantID = Read-Host "Enter your Identity tenant ID eg abc1234"
-$IdentityTenantURL = "$IdentityTenantID.id.cyberark.cloud"
+function Get-IdentityURL {
+    [OutputType([System.String])]
+    [CmdletBinding()]
+    param (
+        [Parameter(
+            Mandatory = $true,
+            HelpMessage = 'Base URL of the CyberArk Identity platform',
+            ValueFromPipelineByPropertyName = $true)]
+        [string]$PCloudURL,
+        [Parameter(ValueFromRemainingArguments = $true,
+            DontShow = $true)]
+        $CatchAll
+    )
+    Begin {
+        $PSBoundParameters.Remove('CatchAll') | Out-Null
+        $PCloudURL -match '^(?:https|http):\/\/(?<sub>.*).privilegecloud.cyberark.(?<top>cloud|com)\/PasswordVault.*$' | Out-Null
+        $PCloudBaseURL = "https://$($matches['sub']).cyberark.$($matches['top'])"
+    }
+    Process {
+        # PowerShell 7.4+ always uses RequestMessage.RequestUri.Host
+        $invokeWebRequestParams = @{
+            Uri        = $PCloudBaseURL
+            WebSession = $Script:websession.value
+        }
+        $IdentityBaseURL = (Invoke-WebRequest @invokeWebRequestParams).BaseResponse.RequestMessage.RequestUri.Host
+    }
+    end {
+        # Return the Identity URL
+        $IdentityURL = "https://$IdentityBaseURL"
+        return $IdentityURL
+    }
+}
+
+$IdentityTenantFullURL = Get-IdentityURL -PCloudURL $PVWAURL
+
+Write-Host "`nCyberArk Tenant URLs" -ForegroundColor Cyan
+Write-Host "====================`n" -ForegroundColor Cyan
+
+Write-Host "PAM SaaS Portal URL : " -NoNewline
+Write-Host $PcloudURL -ForegroundColor Green
+
+Write-Host "PAM SaaS API URL    : " -NoNewline
+Write-Host $PVWAURL -ForegroundColor Green
+
+Write-Host "Identity Tenant URL: " -NoNewline
+Write-Host $IdentityTenantFullURL -ForegroundColor Green
+
+
+$IdentityTenantURL = $IdentityTenantFullURL.Substring(8)
 
 # Prompt for the username
 $IdentityUser = Read-Host "Enter your CyberArk Identity username (e.g., mike@acme.corp)"
@@ -76,8 +131,8 @@ Write-Host "`nUpdate completed successfully." -ForegroundColor Green
 # SIG # Begin signature block
 # MIIesgYJKoZIhvcNAQcCoIIeozCCHp8CAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCBtbxCS/nJ6FjXp
-# 7Jyp6i8wjFe82kXpWeOEQJLW9EYhJaCCGNIwggWNMIIEdaADAgECAhAOmxiO+dAt
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCBaaCKwMApjZsaB
+# PU2cxZIMkRJJNA2DOlWMwfq/anv0PaCCGNIwggWNMIIEdaADAgECAhAOmxiO+dAt
 # 5+/bUOIIQBhaMA0GCSqGSIb3DQEBDAUAMGUxCzAJBgNVBAYTAlVTMRUwEwYDVQQK
 # EwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAiBgNV
 # BAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBDQTAeFw0yMjA4MDEwMDAwMDBa
@@ -214,28 +269,28 @@ Write-Host "`nUpdate completed successfully." -ForegroundColor Green
 # GRYEYWNtZTEVMBMGA1UEAxMMYWNtZS1EQzAxLUNBAhN+AAAAXDZdcRsjYYagAAAA
 # AABcMA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
 # GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
-# AQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEILImBQEeIBNfJHZm66GgHgbd/goDRnfD
-# lFpVwA/35ScbMA0GCSqGSIb3DQEBAQUABIIBAF9qtNkRyInh4WxBsVp6ar3T+dbH
-# nrLm/ASytnOQEMsJpZczfUmHtCVJyVSBUwT+LRqhOGfiLruscg1Ly2bSe5LLizv3
-# nh1zRSpshSS+/DawRVZOMv1gV5fJnLFmTlIfRyGFwvv/7nVrQ8JBg2dHan1DQIRz
-# DkBwHL5LUsk58kU+gP6AyAjfPzq5wWWpMxhsRTCEDSs0zkN05G3aVCR7E3exrS4n
-# E5v6e6LWGD+FH1W57IHvmhPRqsi9hcrwklS6y1B2M1JETrsdrvrw/ZvpJNj7ix0G
-# Od7m/3JzIHhGuewCsoIVtd/+oybCjp6xh3nAfcyKxr/hxy/gz5xWP5SMjjOhggMm
+# AQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIG8aG03uk6mJxHYbR4V2YFXfjJvt8hwo
+# y+fxFlu5+CaCMA0GCSqGSIb3DQEBAQUABIIBAFC4MwoXy1VECAWTWvJNBmNODAJX
+# KFfmfItWwpeHoOcmZDbYFjRNnk6yGseP74c+QpgcJgqf3sbdL5t92e9Zdiiaup16
+# Y/3B7mBBMUuQlttE2IougA16PQrLa9bQoBoT58ktkbgQzoWGYyJgDHZEExYsACnz
+# LhZx4bwLyAWr4/h8svswsN2JaJx7QtZjVw4ofnIUV2eyGJy4K/tG8vHPtGqcoF6x
+# gzcXijgVvfoO3Y1MlYlNN6fmnV3O4hc3hEvp8F9Mxpy/bmV4+J97xuFRUTgwtaP9
+# X3KMPLEg+eL0+8YF4wwSvqqsly6g1uN6Ds3CGrlupw+eD3OmopmIDnPBNoihggMm
 # MIIDIgYJKoZIhvcNAQkGMYIDEzCCAw8CAQEwfTBpMQswCQYDVQQGEwJVUzEXMBUG
 # A1UEChMORGlnaUNlcnQsIEluYy4xQTA/BgNVBAMTOERpZ2lDZXJ0IFRydXN0ZWQg
 # RzQgVGltZVN0YW1waW5nIFJTQTQwOTYgU0hBMjU2IDIwMjUgQ0ExAhAKgO8YS43x
 # BYLRxHanlXRoMA0GCWCGSAFlAwQCAQUAoGkwGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-# DQEHATAcBgkqhkiG9w0BCQUxDxcNMjYwMTE1MDQ0NjE1WjAvBgkqhkiG9w0BCQQx
-# IgQgRriah/7EIwuk8eNabemHU5urmi9fJO8hl41jN81CFFgwDQYJKoZIhvcNAQEB
-# BQAEggIAd3eLjNRHC9Rt9UkKsumpGpGGWcEZS3wSyKv2QhFn0Sx45edkLyOh2UBo
-# Py4+VzKwZLzAfLhxCRdAuv/Fgg8tU1+3+y4TiRXLsUh6dxf6AtQJnQYpCb+JwHY2
-# JZJKopW8rPFpzUhYa555czUnIwmiJDI0O0vmveUfXkwtVpr65w8DQZ3B7UI3yYpH
-# hKMoeMlkW2t9r2sD7qSO4pgI1OoqogDdQwXhWSQ7/3KeJPnLvg+rqrYST7m2mtQn
-# BmTVOHEI1K+AaRUXwceJC0UgsEKlCfysdJPn/izTcgabl4O194rfHqnRCyX589eq
-# U/cmMvz9cn4WagUs/HXci51nKvDyG8oZu9tIMNuovPyY/PtSlwwlEzQ2rY63qQNI
-# ph9dP7XR1uKbs3burD9HpxZIPyvRz6HwNw63/OHXwex75eHm03vFarhGZpT1Cwl9
-# qAWEXTCMTj65WJ2Up7qmizm+tw69e4PUjgjm8gYQjoFlMz56FkWVD5w5aiuCzE/8
-# 3Dv6CBVxOhhjXr3fGb0uwXcUGbG7L1+B6+tb6O1FJEW9k9PrmJeuPAOcQWjdtVhL
-# b3Grb/UtP3Mb8aXLROpsCnJC/s+xpMW/Oiokco2/t7jOaoJHN2q1sqVHrubEpXaH
-# MK3jw4oZ5xrZhw6u8+lMN8aHCBM9By/CPrzFC3Djtu77iPCpcq8=
+# DQEHATAcBgkqhkiG9w0BCQUxDxcNMjYwMTE2MDcwMzAyWjAvBgkqhkiG9w0BCQQx
+# IgQgJiclWJ7s6Wq0reO0rLWSgr+ja2P1IpLVRZjSPHwLBrEwDQYJKoZIhvcNAQEB
+# BQAEggIAv7bj83fj16WJFETjKkl4IsCGePN+0NgYtQ0agLlIvHR6Ts11WGUAOwPk
+# z/KVnGUuFDFmMFQ4F0Abbf5uCyMKR0ZO6yg23ooz62HRVNguCQXunP3JztKLXJaW
+# x3wYBsfz2yKJ/nKIkot1AxYkoB4M57jIu/BqPb1SiTZH8EH+p/D6PFnKOKModVoz
+# n+suExsaj7KxVPA0u3rWMF7i2oz1yk3xlhXXILvNoZbKbWUuK/LfEGwohP797yV7
+# aC+JqRXSjbJ3fdbZ8Hav1rCD8hAnhd7IoemEUWz7RM/Byxd1fb7jonV1GRHj+W4J
+# bEkXK2uYM8kR9BYQ+Og1VaW0EswCvGAGxPnd6iCBaZmWLGZSX/iw+WZ4Dzu4ysbI
+# buzcV2LfsXsffcOw7q1V4/x54B1bMfV21+jOPS0+6YKlkog9+mJEOG3+OoWZlWwl
+# I49pHIeJ7oZkw4UMxraNlG7shjtfjsksJs2hH2Wd1X36FzG1G6+eTm3EkBf+MayF
+# dEoEdjyByz3Avp63rTFjX+EFJiUQAi/emP0vhoImBBrZ9Gj7HSx8jFzR3jwElqS4
+# iSiFUOwAr90gybcNDrg7fLz1hsfGIUrK+1tjC8BGenlktPPyWFfz7y/+fL3+oYne
+# 9Yyvyhs97WEv5Xuv+XJejm9TBzJzboGLUnF6Zp4gmTpcwLmcOlo=
 # SIG # End signature block
