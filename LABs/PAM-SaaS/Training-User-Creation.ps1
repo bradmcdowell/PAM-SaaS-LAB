@@ -104,7 +104,7 @@ $IdentityURL = Get-IdentityURL -idURL $PAMUrl
 $IdentityURL = "https://${IdentityURL}"
 
 # Generate Training Info
-$TrainingUser = "training1@" + $Username.Split('@')[1]
+$TrainingUser = "training@" + $Username.Split('@')[1]
 $TrainingPwd  = Get-RandomPassword
 
 # Export to CSV on Desktop
@@ -223,7 +223,7 @@ if ($res.success) {
 }
 
 # Create Safe Master Role
-$body = @{ Name = "Safe Master1"; Description = "Grant members permissions"; RoleType = "PrincipalList" } | ConvertTo-Json
+$body = @{ Name = "Safe Master"; Description = "Grant members permissions"; RoleType = "PrincipalList" } | ConvertTo-Json
 $res = Invoke-RestMethod -Uri "$IdentityURL/Roles/StoreRole" -Headers $BaseHeaders -Body $body @RestArgs
 if ($res.success) {
     $RoleID = $res.Result._RowKey
