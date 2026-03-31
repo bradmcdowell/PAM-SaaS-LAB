@@ -153,7 +153,7 @@ $body = @{
 $res = Invoke-RestMethod -Uri "$IdentityURL/Security/AdvanceAuthentication" -Headers $BaseHeaders -Body $body @RestArgs
 
 Write-Host "`n[!] MFA challenge sent to your device." -ForegroundColor Yellow
-Read-Host "Press Enter AFTER you have approved the MFA..."
+Read-Host "Click the ""Continue with Authentication"" link in the email then press ENTER once you get confirmation"
 
 # Auth Step 3: Poll for Token
 $body = @{ Action = "Poll"; TenantId = $IdentityID; SessionId = $sid; MechanismId = $mid2 } | ConvertTo-Json
