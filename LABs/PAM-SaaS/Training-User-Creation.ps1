@@ -161,8 +161,6 @@ $ExportObj = [ordered]@{
     Identity_Url      = $IdentityURL
     Training_User     = $TrainingUser
     Training_User_Pwd = $TrainingPwd
-    Trainer_User      = $TrainerUser
-    Trainer_User_Pwd  = $TrainerPwd
 }
 
 # If two users are being created, add the Trainer info to the CSV
