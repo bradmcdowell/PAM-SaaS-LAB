@@ -38,12 +38,12 @@ Start-Transcript -Path $logPath -Append
 # 1. Safes Matrix - List of all safes required for the lab = $SafesMatrix
 # ==============================================================================
 $SafesMatrix = @(
- @{ safeName = "P-BOS-LIN-S-FIN2"; description = "Linux Financial Servers"; numberOfDaysRetention = 5 }
- @{ safeName = "P-BOS-LIN-S-LOGON2"; description = "Linux Logon Servers"; numberOfDaysRetention = 5 }
- @{ safeName = "P-BOS-DB-POS2"; description = "POS Database Servers"; numberOfDaysRetention = 5 }
- @{ safeName = "P-BOS-Web-pgAdmin2"; description = "pgAdmin Web Servers"; numberOfDaysRetention = 5 }
- @{ safeName = "P-BOS-WIN-S-LA-FIN2"; description = "Windows LA Financial"; numberOfDaysRetention = 5 }
- @{ safeName = "P-BOS-WIN-DOM2"; description = "Windows Domain Servers"; numberOfDaysRetention = 5 }
+ @{ safeName = "P-BOS-LIN-S-FIN"; description = "Linux Financial Servers"; numberOfDaysRetention = 5 }
+ @{ safeName = "P-BOS-LIN-S-LOGON"; description = "Linux Logon Servers"; numberOfDaysRetention = 5 }
+ @{ safeName = "P-BOS-DB-POS"; description = "POS Database Servers"; numberOfDaysRetention = 5 }
+ @{ safeName = "P-BOS-Web-pgAdmin"; description = "pgAdmin Web Servers"; numberOfDaysRetention = 5 }
+ @{ safeName = "P-BOS-WIN-S-LA-FIN"; description = "Windows LA Financial"; numberOfDaysRetention = 5 }
+ @{ safeName = "P-BOS-WIN-DOM"; description = "Windows Domain Servers"; numberOfDaysRetention = 5 }
 )
 
 # ==============================================================================
@@ -51,41 +51,41 @@ $SafesMatrix = @(
 # ==============================================================================
 $SafeMemberships = @(
  # --- P-BOS-LIN-S-FIN ---
- @{ safeName = "P-BOS-LIN-S-FIN2"; memberName = "LinuxAdmins@acme.corp"; memberType = "group"; profile = "ConnectAndViewMembers" }
- @{ safeName = "P-BOS-LIN-S-FIN2"; memberName = "Privilege Cloud Administrators"; memberType = "Role"; profile = "VaultAdmin" }
- @{ safeName = "P-BOS-LIN-S-FIN2"; memberName = "Safe Master"; memberType = "Role"; profile = "Full" }
- @{ safeName = "P-BOS-LIN-S-FIN2"; memberName = "Privilege Cloud Safe Managers"; memberType = "Role"; profile = "Full" }
+ @{ safeName = "P-BOS-LIN-S-FIN"; memberName = "LinuxAdmins@acme.corp"; memberType = "group"; profile = "ConnectAndViewMembers" }
+ @{ safeName = "P-BOS-LIN-S-FIN"; memberName = "Privilege Cloud Administrators"; memberType = "Role"; profile = "VaultAdmin" }
+ @{ safeName = "P-BOS-LIN-S-FIN"; memberName = "Safe Master"; memberType = "Role"; profile = "Full" }
+ @{ safeName = "P-BOS-LIN-S-FIN"; memberName = "Privilege Cloud Safe Managers"; memberType = "Role"; profile = "Full" }
 
  # --- P-BOS-LIN-S-LOGON ---
- @{ safeName = "P-BOS-LIN-S-LOGON2"; memberName = "LinuxAdmins@acme.corp"; memberType = "group"; profile = "ConnectAndViewMembers" }
- @{ safeName = "P-BOS-LIN-S-LOGON2"; memberName = "Privilege Cloud Administrators"; memberType = "Role"; profile = "VaultAdmin" }
- @{ safeName = "P-BOS-LIN-S-LOGON2"; memberName = "Safe Master"; memberType = "Role"; profile = "Full" }
- @{ safeName = "P-BOS-LIN-S-LOGON2"; memberName = "Privilege Cloud Safe Managers"; memberType = "Role"; profile = "Full" }
+ @{ safeName = "P-BOS-LIN-S-LOGON"; memberName = "LinuxAdmins@acme.corp"; memberType = "group"; profile = "ConnectAndViewMembers" }
+ @{ safeName = "P-BOS-LIN-S-LOGON"; memberName = "Privilege Cloud Administrators"; memberType = "Role"; profile = "VaultAdmin" }
+ @{ safeName = "P-BOS-LIN-S-LOGON"; memberName = "Safe Master"; memberType = "Role"; profile = "Full" }
+ @{ safeName = "P-BOS-LIN-S-LOGON"; memberName = "Privilege Cloud Safe Managers"; memberType = "Role"; profile = "Full" }
 
  # --- P-BOS-DB-POS ---
- @{ safeName = "P-BOS-DB-POS2"; memberName = "DBAdmins@acme.corp"; memberType = "group"; profile = "ConnectOnly" }
- @{ safeName = "P-BOS-DB-POS2"; memberName = "Privilege Cloud Administrators"; memberType = "Role"; profile = "VaultAdmin" }
- @{ safeName = "P-BOS-DB-POS2"; memberName = "Safe Master"; memberType = "Role"; profile = "Full" }
- @{ safeName = "P-BOS-DB-POS2"; memberName = "Secure Infrastructure Privilege Cloud Ephemeral Access"; memberType = "Role"; profile = "ReadOnly" }
- @{ safeName = "P-BOS-DB-POS2"; memberName = "Privilege Cloud Safe Managers"; memberType = "Role"; profile = "Full" }
+ @{ safeName = "P-BOS-DB-POS"; memberName = "DBAdmins@acme.corp"; memberType = "group"; profile = "ConnectOnly" }
+ @{ safeName = "P-BOS-DB-POS"; memberName = "Privilege Cloud Administrators"; memberType = "Role"; profile = "VaultAdmin" }
+ @{ safeName = "P-BOS-DB-POS"; memberName = "Safe Master"; memberType = "Role"; profile = "Full" }
+ @{ safeName = "P-BOS-DB-POS"; memberName = "Secure Infrastructure Privilege Cloud Ephemeral Access"; memberType = "Role"; profile = "ReadOnly" }
+ @{ safeName = "P-BOS-DB-POS"; memberName = "Privilege Cloud Safe Managers"; memberType = "Role"; profile = "Full" }
 
  # --- P-BOS-Web-pgAdmin ---
- @{ safeName = "P-BOS-Web-pgAdmin2"; memberName = "WebAppAdmins@acme.corp"; memberType = "group"; profile = "ConnectOnly" }
- @{ safeName = "P-BOS-Web-pgAdmin2"; memberName = "Privilege Cloud Administrators"; memberType = "Role"; profile = "VaultAdmin" }
- @{ safeName = "P-BOS-Web-pgAdmin2"; memberName = "Safe Master"; memberType = "Role"; profile = "Full" }
- @{ safeName = "P-BOS-Web-pgAdmin2"; memberName = "Privilege Cloud Safe Managers"; memberType = "Role"; profile = "Full" }
+ @{ safeName = "P-BOS-Web-pgAdmin"; memberName = "WebAppAdmins@acme.corp"; memberType = "group"; profile = "ConnectOnly" }
+ @{ safeName = "P-BOS-Web-pgAdmin"; memberName = "Privilege Cloud Administrators"; memberType = "Role"; profile = "VaultAdmin" }
+ @{ safeName = "P-BOS-Web-pgAdmin"; memberName = "Safe Master"; memberType = "Role"; profile = "Full" }
+ @{ safeName = "P-BOS-Web-pgAdmin"; memberName = "Privilege Cloud Safe Managers"; memberType = "Role"; profile = "Full" }
 
  # --- P-BOS-WIN-S-LA-FIN ---
- @{ safeName = "P-BOS-WIN-S-LA-FIN2"; memberName = "WindowsAdmins@acme.corp"; memberType = "group"; profile = "ConnectAndViewMembers" }
- @{ safeName = "P-BOS-WIN-S-LA-FIN2"; memberName = "Privilege Cloud Administrators"; memberType = "Role"; profile = "VaultAdmin" }
- @{ safeName = "P-BOS-WIN-S-LA-FIN2"; memberName = "Safe Master"; memberType = "Role"; profile = "Full" }
- @{ safeName = "P-BOS-WIN-S-LA-FIN2"; memberName = "Privilege Cloud Safe Managers"; memberType = "Role"; profile = "Full" }
+ @{ safeName = "P-BOS-WIN-S-LA-FIN"; memberName = "WindowsAdmins@acme.corp"; memberType = "group"; profile = "ConnectAndViewMembers" }
+ @{ safeName = "P-BOS-WIN-S-LA-FIN"; memberName = "Privilege Cloud Administrators"; memberType = "Role"; profile = "VaultAdmin" }
+ @{ safeName = "P-BOS-WIN-S-LA-FIN"; memberName = "Safe Master"; memberType = "Role"; profile = "Full" }
+ @{ safeName = "P-BOS-WIN-S-LA-FIN"; memberName = "Privilege Cloud Safe Managers"; memberType = "Role"; profile = "Full" }
 
  # --- P-BOS-WIN-DOM ---
- @{ safeName = "P-BOS-WIN-DOM2"; memberName = "WindowsAdmins@acme.corp"; memberType = "group"; profile = "ConnectAndViewMembers" }
- @{ safeName = "P-BOS-WIN-DOM2"; memberName = "Privilege Cloud Administrators"; memberType = "Role"; profile = "VaultAdmin" }
- @{ safeName = "P-BOS-WIN-DOM2"; memberName = "Safe Master"; memberType = "Role"; profile = "Full" }
- @{ safeName = "P-BOS-WIN-DOM2"; memberName = "Privilege Cloud Safe Managers"; memberType = "Role"; profile = "Full" }
+ @{ safeName = "P-BOS-WIN-DOM"; memberName = "WindowsAdmins@acme.corp"; memberType = "group"; profile = "ConnectAndViewMembers" }
+ @{ safeName = "P-BOS-WIN-DOM"; memberName = "Privilege Cloud Administrators"; memberType = "Role"; profile = "VaultAdmin" }
+ @{ safeName = "P-BOS-WIN-DOM"; memberName = "Safe Master"; memberType = "Role"; profile = "Full" }
+ @{ safeName = "P-BOS-WIN-DOM"; memberName = "Privilege Cloud Safe Managers"; memberType = "Role"; profile = "Full" }
 )
 
 # ==============================================================================
