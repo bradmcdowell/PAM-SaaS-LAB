@@ -110,7 +110,7 @@ $PermissionProfiles = @{
  "ConnectOnly" = New-PermSet -TruePerms @("listAccounts", "useAccounts")
  "ConnectAndViewMembers" = New-PermSet -TruePerms @("listAccounts", "useAccounts", "viewSafeMembers")
  "VaultAdmin" = New-PermSet -TruePerms @("listAccounts", "addAccounts", "updateAccountContent", "updateAccountProperties", "initiateCPMAccountManagementOperations", "specifyNextAccountContent", "renameAccounts", "deleteAccounts", "unlockAccounts", "viewSafeMembers", "viewAuditLog")
- "Full" = New-PermSet -TruePerms @("useAccounts", "retrieveAccounts", "listAccounts", "addAccounts", "updateAccountContent", "updateAccountProperties", "initiateCPMAccountManagementOperations", "specifyNextAccountContent", "renameAccounts", "deleteAccounts", "unlockAccounts", "manageSafe", "manageSafeMembers", "backupSafe", "viewAuditLog", "viewSafeMembers", "accessWithoutConfirmation", "createFolders", "deleteFolders", "moveAccountsAndFolders")
+ "Full" = New-PermSet -TruePerms @("useAccounts", "retrieveAccounts", "listAccounts", "addAccounts", "updateAccountContent", "updateAccountProperties", "initiateCPMAccountManagementOperations", "specifyNextAccountContent", "renameAccounts", "deleteAccounts", "unlockAccounts", "manageSafe", "manageSafeMembers", "backupSafe", "viewAuditLog", "viewSafeMembers", "requestsAuthorizationLevel1", "accessWithoutConfirmation", "createFolders", "deleteFolders", "moveAccountsAndFolders")
 }
 
 # ==============================================================================
