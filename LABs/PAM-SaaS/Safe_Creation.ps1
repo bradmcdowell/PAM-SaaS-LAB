@@ -66,7 +66,7 @@ $SafeMemberships = @(
  @{ safeName = "P-BOS-DB-POS"; memberName = "DBAdmins@acme.corp"; memberType = "group"; profile = "ConnectOnly" }
  @{ safeName = "P-BOS-DB-POS"; memberName = "Privilege Cloud Administrators"; memberType = "Role"; profile = "VaultAdmin" }
  @{ safeName = "P-BOS-DB-POS"; memberName = "Safe Master"; memberType = "Role"; profile = "Full" }
- @{ safeName = "P-BOS-DB-POS"; memberName = "Secure Infrastructure Privilege Cloud Ephemeral Access"; memberType = "Role"; profile = "ReadOnly" }
+ @{ safeName = "P-BOS-DB-POS"; memberName = "Secure Infrastructure Privilege Cloud Ephemeral Access"; memberType = "Role"; profile = "ConnectOnly" }
  @{ safeName = "P-BOS-DB-POS"; memberName = "Privilege Cloud Safe Managers"; memberType = "Role"; profile = "Full" }
 
  # --- P-BOS-Web-pgAdmin ---
