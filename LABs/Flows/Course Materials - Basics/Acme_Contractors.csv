@@ -1,0 +1,5 @@
+Login Name,Email Address,Display Name,Description,Office Number,Mobile Number,Home Number,Roles,Password,Require Password Change,Personal_Email
+Carrie.Cairo@acme[IdentityID].com,Carrie.cairo@acme.corp,Carrie Cairo,Contractor,,,,Contractors,Cyberark123!,FALSE,
+Holly.Wood@acme[IdentityID].com,Holly.Wood@acme.corp,Holly Wood,Contractor,,,,Contractors,Cyberark123!,FALSE,
+Carlos.Burg@acme[IdentityID].com,Carlos.Burg@acme.corp,Carlos Burg,Contractor,,,,Contractors,Cyberark123!,FALSE,
+Daniel.Carter@acme[IdentityID].com,Daniel.Carter@acme.corp,Daniel Carter,Contractor,,,,Contractors,Cyberark123!,FALSE,

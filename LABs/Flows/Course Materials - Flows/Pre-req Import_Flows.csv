@@ -1,0 +1,6 @@
+Login Name,Display Name,Email Address,Office Number,Home Number,Mobile Number,Description,Roles,Password,Require Password Change,Expiration Date,Password Never Expires,locale_home
+JohnW@acme[TenatID].com,John Watson,john.Watson@acme.com,,,,Southern Sales Associate,,Cyberark1,no,,TRUE,
+MelissaC@acme[TenatID].com,Melissa Cohen,Melissa.Cohen@acme.com,,,,Western Sales Associate,,Cyberark1,no,,TRUE,
+AngelaC@acme[TenatID].com,Angela Coleman,Angela.Coleman@acme.com,,,,Northern Sales Associate,,Cyberark1,no,,TRUE,
+PatrickM@acme[TenatID].com,Patrick Martinez,Patrick.Martinez@acme.com,,,,Eastern Sales Associate,,Cyberark1,no,,TRUE,
+AllisterH@acme[TenatID].com,Allister Harris,Allister.Harris@acme.com,,,,Sales Manager,,Cyberark1,no,,TRUE,
